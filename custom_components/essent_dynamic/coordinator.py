@@ -44,17 +44,30 @@ class EssentDataUpdateCoordinator(DataUpdateCoordinator):
     def _parse_data(self, data: dict) -> dict[str, Any]:
         """Parse the API response into a more usable format."""
         parsed = {
-            "electricity": [],
-            "gas": [],
+            "electricity": {"tariffs": [], "days": {}},
+            "gas": {"tariffs": [], "days": {}},
         }
 
         # The API returns a list of days in 'prices'
         prices_by_day = data.get("prices", [])
         
         for day in prices_by_day:
-            if "electricity" in day and "tariffs" in day["electricity"]:
-                parsed["electricity"].extend(day["electricity"]["tariffs"])
-            if "gas" in day and "tariffs" in day["gas"]:
-                parsed["gas"].extend(day["gas"]["tariffs"])
+            date_str = day.get("date")
+            if "electricity" in day:
+                if "tariffs" in day["electricity"]:
+                    parsed["electricity"]["tariffs"].extend(day["electricity"]["tariffs"])
+                parsed["electricity"]["days"][date_str] = {
+                    "min": day["electricity"].get("minAmount"),
+                    "average": day["electricity"].get("averageAmount"),
+                    "max": day["electricity"].get("maxAmount"),
+                }
+            if "gas" in day:
+                if "tariffs" in day["gas"]:
+                    parsed["gas"]["tariffs"].extend(day["gas"]["tariffs"])
+                parsed["gas"]["days"][date_str] = {
+                    "min": day["gas"].get("minAmount"),
+                    "average": day["gas"].get("averageAmount"),
+                    "max": day["gas"].get("maxAmount"),
+                }
 
         return parsed

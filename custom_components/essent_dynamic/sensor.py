@@ -62,7 +62,7 @@ class EssentCurrentPriceSensor(CoordinatorEntity, SensorEntity):
 
         now = dt_util.now()
         
-        for tariff in self.coordinator.data[self._energy_type]:
+        for tariff in self.coordinator.data[self._energy_type]["tariffs"]:
             start_str = tariff.get("startDateTime")
             end_str = tariff.get("endDateTime")
             if not start_str or not end_str:
@@ -99,7 +99,7 @@ class EssentCurrentPriceSensor(CoordinatorEntity, SensorEntity):
         today = now.date()
         tomorrow = dt_util.now().date() + timedelta(days=1)
 
-        for tariff in self.coordinator.data[self._energy_type]:
+        for tariff in self.coordinator.data[self._energy_type]["tariffs"]:
             start_str = tariff.get("startDateTime")
             end_str = tariff.get("endDateTime")
             if not start_str or not end_str:
@@ -125,7 +125,24 @@ class EssentCurrentPriceSensor(CoordinatorEntity, SensorEntity):
             except Exception as e:
                 pass
 
-        return {
+        attrs = {
             "today": today_prices,
             "tomorrow": tomorrow_prices
         }
+        
+        # Add min, average, max for today and tomorrow
+        days_data = self.coordinator.data[self._energy_type].get("days", {})
+        today_str = today.isoformat()
+        tomorrow_str = tomorrow.isoformat()
+        
+        if today_str in days_data:
+            attrs["average_price_today"] = days_data[today_str].get("average")
+            attrs["min_price_today"] = days_data[today_str].get("min")
+            attrs["max_price_today"] = days_data[today_str].get("max")
+            
+        if tomorrow_str in days_data:
+            attrs["average_price_tomorrow"] = days_data[tomorrow_str].get("average")
+            attrs["min_price_tomorrow"] = days_data[tomorrow_str].get("min")
+            attrs["max_price_tomorrow"] = days_data[tomorrow_str].get("max")
+
+        return attrs
