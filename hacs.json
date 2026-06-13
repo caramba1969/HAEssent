@@ -1,0 +1,7 @@
+{
+  "name": "Essent Dynamic Pricing",
+  "render_readme": true,
+  "file_name": "essent_dynamic",
+  "homeassistant": "2023.8.0",
+  "iot_class": "cloud_polling"
+}
