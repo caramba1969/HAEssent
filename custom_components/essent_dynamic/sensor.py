@@ -28,7 +28,14 @@ async def async_setup_entry(
     
     sensors = [
         EssentCurrentPriceSensor(coordinator, "electricity", "Current Electricity Price", "mdi:flash", "EUR/kWh"),
+        EssentDailyStatSensor(coordinator, "electricity", "average", "Average Electricity Price Today", "mdi:chart-bell-curve", "EUR/kWh"),
+        EssentDailyStatSensor(coordinator, "electricity", "min", "Min Electricity Price Today", "mdi:arrow-down-bold-circle-outline", "EUR/kWh"),
+        EssentDailyStatSensor(coordinator, "electricity", "max", "Max Electricity Price Today", "mdi:arrow-up-bold-circle-outline", "EUR/kWh"),
+
         EssentCurrentPriceSensor(coordinator, "gas", "Current Gas Price", "mdi:fire", "EUR/m³"),
+        EssentDailyStatSensor(coordinator, "gas", "average", "Average Gas Price Today", "mdi:chart-bell-curve", "EUR/m³"),
+        EssentDailyStatSensor(coordinator, "gas", "min", "Min Gas Price Today", "mdi:arrow-down-bold-circle-outline", "EUR/m³"),
+        EssentDailyStatSensor(coordinator, "gas", "max", "Max Gas Price Today", "mdi:arrow-up-bold-circle-outline", "EUR/m³"),
     ]
     async_add_entities(sensors)
 
@@ -146,3 +153,40 @@ class EssentCurrentPriceSensor(CoordinatorEntity, SensorEntity):
             attrs["max_price_tomorrow"] = days_data[tomorrow_str].get("max")
 
         return attrs
+
+class EssentDailyStatSensor(CoordinatorEntity, SensorEntity):
+    """Representation of a Essent Daily Stat sensor."""
+
+    def __init__(
+        self,
+        coordinator: EssentDataUpdateCoordinator,
+        energy_type: str,
+        stat_type: str,
+        name: str,
+        icon: str,
+        unit: str
+    ) -> None:
+        """Initialize the sensor."""
+        super().__init__(coordinator)
+        self._energy_type = energy_type
+        self._stat_type = stat_type
+        self._attr_name = name
+        self._attr_icon = icon
+        self._attr_native_unit_of_measurement = unit
+        self._attr_unique_id = f"essent_dynamic_{energy_type}_{stat_type}_price"
+        self._attr_device_class = SensorDeviceClass.MONETARY
+        self._attr_state_class = SensorStateClass.MEASUREMENT
+
+    @property
+    def native_value(self) -> float | None:
+        """Return the requested stat for today."""
+        if not self.coordinator.data or not self.coordinator.data.get(self._energy_type):
+            return None
+
+        today_str = dt_util.now().date().isoformat()
+        days_data = self.coordinator.data[self._energy_type].get("days", {})
+        
+        if today_str in days_data:
+            return days_data[today_str].get(self._stat_type)
+            
+        return None
