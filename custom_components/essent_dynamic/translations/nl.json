@@ -1,0 +1,17 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Essent Dynamische Prijzen",
+        "description": "Wil je de Essent Dynamische Prijzen integratie instellen? Hiermee worden de huidige dynamische stroom- en gasprijzen opgehaald."
+      }
+    },
+    "error": {
+      "cannot_connect": "Verbinden mislukt",
+      "unknown": "Onverwachte fout"
+    },
+    "abort": {
+      "single_instance_allowed": "Al geconfigureerd. Slechts één configuratie is mogelijk."
+    }
+  }
+}

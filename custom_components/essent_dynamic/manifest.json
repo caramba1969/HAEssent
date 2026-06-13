@@ -1,0 +1,12 @@
+{
+  "domain": "essent_dynamic",
+  "name": "Essent Dynamic Pricing",
+  "codeowners": ["@yourname"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/yourname/ha-essent-dynamic",
+  "integration_type": "hub",
+  "iot_class": "cloud_polling",
+  "requirements": [],
+  "version": "1.0.0"
+}
