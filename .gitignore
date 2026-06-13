@@ -1,0 +1,8 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Testing
+api_response.json
+test_api.py
