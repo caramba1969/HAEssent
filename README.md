@@ -7,10 +7,20 @@ Door een recente beveiligingsupdate bij Essent werken de publieke/openbare endpo
 ## Sensoren
 
 De volgende sensoren worden aangemaakt:
-- `sensor.essent_dynamic_electricity_price` (actuele prijs per kWh)
-- `sensor.essent_dynamic_gas_price` (actuele prijs per m³)
 
-Beide sensoren bevatten attributen met de prijzen voor `today` en `tomorrow` in JSON formaat.
+**Elektriciteit:**
+- `sensor.essent_dynamic_electricity_price` (actuele prijs per kWh)
+- `sensor.essent_dynamic_electricity_average_price` (gemiddelde prijs vandaag)
+- `sensor.essent_dynamic_electricity_min_price` (minimale prijs vandaag)
+- `sensor.essent_dynamic_electricity_max_price` (maximale prijs vandaag)
+
+**Gas:**
+- `sensor.essent_dynamic_gas_price` (actuele prijs per m³)
+- `sensor.essent_dynamic_gas_average_price` (gemiddelde prijs vandaag)
+- `sensor.essent_dynamic_gas_min_price` (minimale prijs vandaag)
+- `sensor.essent_dynamic_gas_max_price` (maximale prijs vandaag)
+
+De 'actuele prijs' sensoren bevatten bovendien handige attributen met een overzicht van de prijzen voor `today` en `tomorrow` in JSON formaat (perfect voor ApexCharts).
 
 ## Installatie via HACS (Custom Repository)
 
